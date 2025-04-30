@@ -12,6 +12,7 @@ contract LandContract {
     uint landID;
     string location;
     uint value;
+    string propertyType;
     address payable owner;
     bool forSale;
   }
@@ -24,7 +25,8 @@ contract LandContract {
   event Add(
     uint landID, 
     string location, 
-    uint value, 
+    uint value,
+    string propertyType, 
     address payable owner, 
     bool forSale
   );
@@ -32,7 +34,8 @@ contract LandContract {
   event Transfer(
     uint landID, 
     string location, 
-    uint value, 
+    uint value,
+    string propertyType, 
     address payable owner, 
     bool forSale
   );
@@ -40,7 +43,8 @@ contract LandContract {
   event List(
     uint landID, 
     string location, 
-    uint value, 
+    uint value,
+    string propertyType, 
     address payable owner, 
     bool forSale
   );
@@ -50,17 +54,19 @@ contract LandContract {
     _;
   } 
 
-  function addLand(string memory _location, uint _value) public isOwner {
+  function addLand(string memory _location, uint _value, string memory _propertyType) public isOwner {
     // Require a valid location
     require(bytes(_location).length > 0, 'Must be a valid location');
-    // Requie a valid value
+    // Require a valid value
     require(_value > 0, 'Must be a value');
+    // Require a valid property type
+    require(bytes(_propertyType).length > 0, 'Must be a valid property type');
     // Increment land count
     landCount++;
     // Add land
-    lands[landCount] = Land(landCount, _location, _value, msg.sender, true);
+    lands[landCount] = Land(landCount, _location, _value, _propertyType, msg.sender, true);
     // Trigger an event
-    emit Add(landCount, _location, _value, msg.sender, true);
+    emit Add(landCount, _location, _value, _propertyType, msg.sender, true);
   }
 
   function buyLand(uint _id) public payable {
@@ -85,7 +91,7 @@ contract LandContract {
     // Pay landHolder
     address(_landHolder).transfer(msg.value);
     // Trigger an event
-    emit Transfer(landCount, _land.location, _land.value, msg.sender, false);
+    emit Transfer(landCount, _land.location, _land.value, _land.propertyType, msg.sender, false);
   }
   
   function listLand(uint _id, uint _value) public payable {
@@ -104,7 +110,7 @@ contract LandContract {
     // Update land
     lands[_id] = _land;
     // Trigger an event
-    emit List(_id, _land.location, _value, msg.sender, true);
+    emit List(_id, _land.location, _value, _land.propertyType, msg.sender, true);
   }
 }
     
