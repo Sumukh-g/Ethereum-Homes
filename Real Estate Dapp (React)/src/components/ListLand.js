@@ -3,8 +3,7 @@ import React, { Component } from 'react'
 class ListLand extends Component {
 
   state = {
-    id: null,
-    value: null
+    id: null
   }
 
   handleChange = (e) => {
@@ -16,12 +15,11 @@ class ListLand extends Component {
   render() {
     return (
       <div>
-        <h2>List Your Land</h2>
+        <h2>Toggle Land Sale Status</h2>
         <form onSubmit={(event) => {
           event.preventDefault()
           const id = this.state.id
-          const value = window.web3.utils.toWei(this.state.value.toString(), 'Ether')
-          this.props.listLand(id, value)
+          this.props.toggleLandSaleStatus(id)
         }}>
           <div className="form-group mr-sm-2">
             <input
@@ -32,16 +30,7 @@ class ListLand extends Component {
               placeholder="Land ID.."
               required />
           </div>
-          <div className="form-group mr-sm-2">
-            <input
-              id="value"
-              type="text"
-              onChange={this.handleChange}
-              className="form-control"
-              placeholder="Listing Price.."
-              required />
-          </div>
-          <button type="submit" className="btn btn-primary">List Land</button>
+          <button type="submit" className="btn btn-primary">Toggle Sale Status</button>
         </form>
       </div>
     )

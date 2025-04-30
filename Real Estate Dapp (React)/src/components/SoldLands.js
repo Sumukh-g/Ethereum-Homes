@@ -1,31 +1,25 @@
 import React, { Component } from 'react'
 
-const showSoldLands = (lands, listLand, account, handleChange, value) => {
-  const soldLands = lands.filter(land => land.forSale === false)
+const showSoldLands = (lands, toggleLandSaleStatus, account) => {
+  const soldLands = lands.filter(land => land.isForSale === false)
   return (
     soldLands.map((land) => {
       return (
-        <tr key={land.landID}>
-          <th scope="row">{land.landID.toString()}</th>
+        <tr key={land.id}>
+          <th scope="row">{land.id.toString()}</th>
           <td>{land.location}</td>
-          <td>{window.web3.utils.fromWei(land.value.toString(), 'Ether')} Eth</td>
+          <td>{window.web3.utils.fromWei(land.price.toString(), 'Ether')} Eth</td>
           <td>{land.owner}</td>
           { land.owner === account ? 
-            <td className="td-listLand">
-              <input
-                id="value"
-                onChange={handleChange}
-                type="text"
-                className="input-listLand"
-                placeholder="Listing Price.."
-                required />
+            <td>
               <button 
-                value={value}
-                className="buyButton"
-                onClick={ (e) => { listLand(land.landID, window.web3.utils.toWei(e.target.value.toString(), 'Ether')) } } 
-              > List Your Land
+                className="btn btn-primary"
+                onClick={() => toggleLandSaleStatus(land.id)} 
+              >
+                List For Sale
               </button>
-            </td> : <td><strong>Not Your Land</strong></td>
+            </td> : 
+            <td><strong>Not Your Land</strong></td>
           } 
         </tr>
       )
@@ -34,19 +28,8 @@ const showSoldLands = (lands, listLand, account, handleChange, value) => {
 }
 
 class SoldLands extends Component {
-
-  state = {
-    value: null
-  }
-
-  handleChange = (e) => {
-    this.setState({
-      [e.target.id]: e.target.value
-    })
-  }
-
   render() {
-    const { lands, listLand, account } = this.props;
+    const { lands, toggleLandSaleStatus, account } = this.props;
     return (
       <div>
         <h2>Out of Market</h2>
@@ -61,7 +44,7 @@ class SoldLands extends Component {
             </tr>
           </thead>
           <tbody id="landList">
-            { showSoldLands(lands, listLand, account, this.handleChange, this.state.value) }
+            { showSoldLands(lands, toggleLandSaleStatus, account) }
           </tbody>
         </table>
       </div>
